@@ -15,9 +15,7 @@
 
 - name: Deploy vip manifest
   include_tasks: vip.yml
-
-- name: Deploy metallb manifest
-  include_tasks: metallb.yml
+  when: enableVip
 
 - name: Init cluster inside the transient k3s-init service
   command:
@@ -118,7 +116,7 @@
   changed_when: true
   vars:
     endpoint_url: >-
-      https://{{ apiserver_endpoint | ansible.utils.ipwrap }}:6443
+      https://{{ kubeapiserver_ip | trim }}:6443
   # Deactivated linter rules:
   #   - jinja[invalid]: As of version 6.6.0, ansible-lint complains that the input to ipwrap
   #                     would be undefined. This will not be the case during playbook execution.
